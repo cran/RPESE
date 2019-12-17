@@ -19,6 +19,8 @@
 #' \code{"BOOTiid"}, \code{"BOOTcor"}, or \code{"none"}.
 #' @param cleanOutliers Boolean variable to indicate whether the pre-whitenning of the influence functions TS should be done through a robust filter.
 #' @param fitting.method Distribution used in the standard errors computation. Should be one of "Exponential" (default) or "Gamma".
+#' @param freq.include Frequency domain inclusion criteria. Must be one of "All" (default), "Decimate" or "Truncate."
+#' @param freq.par Percentage of the frequency used if \code{"freq.include"} is "Decimate" or "Truncate." Default is 0.5.
 #' @param a First adaptive method parameter.
 #' @param b Second adaptive method parameter.
 #' @param ... Additional parameters.
@@ -50,6 +52,7 @@ EstimatorSE <- function(data,
                         se.method = c("IFiid","IFcor","IFcorAdapt","IFcorPW","BOOTiid","BOOTcor"),
                         cleanOutliers=FALSE,
                         fitting.method=c("Exponential", "Gamma")[1],
+                        freq.include=c("All", "Decimate", "Truncate")[1], freq.par=0.5,
                         a=0.3, b=0.7,
                         ...){
 
@@ -74,6 +77,15 @@ EstimatorSE <- function(data,
   # Checking if the standard error method is available
   if(!(fitting.method %in% fitting.available))
     stop("The specified fitting method is not available.")
+
+  # Available frequency inclusion
+  frequency.available <- c("All", "Decimate", "Truncate")
+  # Checking if the standard error method is available
+  if(!(freq.include %in% frequency.available))
+    stop("The specified frequency inclusion criteria is not available.")
+  # Checking frequency parameter
+  if(any(!is.numeric(freq.par), length(freq.par)!=1, freq.par<0, freq.par>1))
+    stop("The frequency parameter must be a numerical value between 0 and 1.")
 
   myfun = switch(estimator.fun,
                  Mean = mean,
@@ -101,7 +113,7 @@ EstimatorSE <- function(data,
                      VaRratio = IF.VaRratio,
                      LPM = IF.LPM,
                      OmegaRatio = IF.Omega,
-                     SemiSD = IF.SSD,
+                     SemiSD = IF.SemiSD,
                      RachevRatio = IF.RachR,
                      stop("The estimator.fun specified is not implemented yet, please contact Anthony Christidis (anthony.christidis@stat.ubc.ca) or submit an issue at the github repository")
   )
@@ -111,15 +123,19 @@ EstimatorSE <- function(data,
     IFiid = SE.xts(data, SE.IF.iid, myfun, myfun.IF, ...),
     IFcor = SE.xts(data, SE.IF.cor, myfun, myfun.IF,
                    prewhiten=FALSE, cleanOutliers=cleanOutliers, fitting.method=fitting.method,
+                   freq.include=freq.include, freq.par=freq.par,
                    ...),
     IFcorPW = SE.xts(data, SE.IF.cor, myfun, myfun.IF,
                    prewhiten=TRUE, cleanOutliers=cleanOutliers, fitting.method=fitting.method,
+                   freq.include=freq.include, freq.par=freq.par,
                    ...),
     IFcorAdapt = list(cor=SE.xts(data, SE.IF.cor, myfun, myfun.IF, prewhiten=FALSE,
                                  cleanOutliers=cleanOutliers, fitting.method=fitting.method,
+                                 freq.include=freq.include, freq.par=freq.par,
                                  ...),
                       corPW=SE.xts(data, SE.IF.cor, myfun, myfun.IF, prewhiten=TRUE,
                                    cleanOutliers=cleanOutliers, fitting.method=fitting.method,
+                                   freq.include=freq.include, freq.par=freq.par,
                                    ...)),
     BOOTiid = SE.xts(data, SE.BOOT.iid, myfun, myfun.IF, ...),
     BOOTcor = SE.xts(data, SE.BOOT.cor, myfun, myfun.IF,...)

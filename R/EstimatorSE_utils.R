@@ -1,12 +1,14 @@
 # Compute the standard error for the xts object
 SE.xts = function(x, se.fun, myfun, myfun.IF,
                   prewhiten=FALSE, cleanOutliers=FALSE, fitting.method=c("Exponential", "Gamma")[1],
+                  freq.include=c("All", "Decimate", "Truncate")[1], freq.par=0.5,
                   ...){
   if (is.vector(x) || is.null(ncol(x)) || ncol(x) == 1) {
     x <- as.numeric(x)
     #    if(na.rm) x <- na.omit(x)
     return(se.fun(x = x, myfun = myfun, myfun.IF = myfun.IF,
                   prewhiten=prewhiten, cleanOutliers=cleanOutliers, fitting.method=fitting.method,
+                  freq.include=freq.include, freq.par=freq.par,
                   ...))
   }
   else {
@@ -14,6 +16,7 @@ SE.xts = function(x, se.fun, myfun, myfun.IF,
     #    if(na.rm) x <- na.omit(x)
     return(apply(x, 2, se.fun, myfun = myfun, myfun.IF = myfun.IF,
                  prewhiten=prewhiten, cleanOutliers=cleanOutliers, fitting.method=fitting.method,
+                 freq.include=freq.include, freq.par=freq.par,
                  ...))
   }
 }
@@ -45,6 +48,7 @@ SE.BOOT.cor = function(x, myfun, myfun.IF, prewhiten=FALSE, ..., nsim = 1000,
 SE.IF.cor = function(x, myfun.IF, return.coeffs = FALSE, d.GLM.EN = 5, alpha.EN = 0.5, keep = 1,
                      standardize = FALSE,
                      prewhiten=FALSE, cleanOutliers=FALSE, fitting.method=c("Exponential", "Gamma")[1],
+                     freq.include=c("All", "Decimate", "Truncate")[1], freq.par=0.5,
                      ...){
   d = d.GLM.EN
   data.IF = myfun.IF(x, prewhiten=prewhiten, cleanOutliers=cleanOutliers, ...)
@@ -56,6 +60,7 @@ SE.IF.cor = function(x, myfun.IF, return.coeffs = FALSE, d.GLM.EN = 5, alpha.EN 
   tmp = SE.glmnet_exp(data.IF, standardize = standardize,
                       return.coeffs = return.coeffs, d = d, alpha.EN = alpha.EN, keep = keep,
                       fitting.method = fitting.method,
+                      freq.include = freq.include, freq.par = freq.par,
                       prewhiten = prewhiten, ar.coeffs = ar.coeffs,
                       ...)
   if(return.coeffs){

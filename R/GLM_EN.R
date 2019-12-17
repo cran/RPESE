@@ -1,5 +1,7 @@
 # Compute the periodogram as defined in H&W 1981
-myperiodogram <- function(data,..., max.freq=0.5, twosided = FALSE, keep = 1){
+myperiodogram <- function(data, ...,
+                          freq.include=c("All", "Decimate", "Truncate")[1], freq.par=0.5,
+                          twosided = FALSE, keep = 1){
   ## data.fft=myfft(data) This is very slow
   data.fft=fft(data)
   N=length(data)
@@ -8,8 +10,18 @@ myperiodogram <- function(data,..., max.freq=0.5, twosided = FALSE, keep = 1){
   tmp = Mod(data.fft[2:floor(N/2)])^2/N
   tmp = sapply(tmp, function(x) max(0.00001,x))
   freq = ((1:(floor(N/2)-1))/N)
-  tmp = tmp[1:floor(length(tmp) * keep)]
-  freq = freq[1:floor(length(freq) * keep)]
+
+  if(freq.include=="All"){
+    tmp = tmp[1:floor(length(tmp) * keep)]
+    freq = freq[1:floor(length(freq) * keep)]
+  } else if(freq.include=="Decimate"){
+    tmp = tmp[seq(1, length(tmp), by=round(1/freq.par,0))]
+    freq = freq[seq(1, length(freq), by=round(1/freq.par,0))]
+  } else if(freq.include=="Truncate"){
+    tmp = tmp[1:floor(length(tmp) * freq.par)]
+    freq = freq[1:floor(length(freq) * freq.par)]
+  }
+
   if (twosided){
     tmp = c(rev(tmp), tmp)
     freq = c(-rev(freq), freq)
@@ -23,12 +35,14 @@ SE.glmnet_exp <- function(data, ...,
                           standardize = FALSE,
                           return.coeffs = FALSE,
                           prewhiten = FALSE, ar.coeffs=NULL,
-                          fitting.method = c("Exponential", "Gamma")[1]){
+                          fitting.method = c("Exponential", "Gamma")[1],
+                          freq.include=c("All", "Decimate", "Truncate")[1], freq.par=0.5){
   ##### perform prewhitening
 
   N=length(data)
   # Step 1: compute the periodograms
-  my.periodogram=myperiodogram(data, ...,  keep = keep)
+  my.periodogram=myperiodogram(data, ...,  keep = keep,
+                               freq.include=freq.include, freq.par=freq.par)
   my.freq=my.periodogram$freq
   my.periodogram=my.periodogram$spec
 

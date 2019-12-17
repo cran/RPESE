@@ -8,8 +8,9 @@ EstimatorSE(data, estimator.fun = c("Mean", "SD", "VaR", "ES", "SR",
   "SoR", "ESratio", "VaRratio", "SoR", "LPM", "OmegaRatio", "SemiSD",
   "RachevRatio"), se.method = c("IFiid", "IFcor", "IFcorAdapt",
   "IFcorPW", "BOOTiid", "BOOTcor"), cleanOutliers = FALSE,
-  fitting.method = c("Exponential", "Gamma")[1], a = 0.3, b = 0.7,
-  ...)
+  fitting.method = c("Exponential", "Gamma")[1],
+  freq.include = c("All", "Decimate", "Truncate")[1], freq.par = 0.5,
+  a = 0.3, b = 0.7, ...)
 }
 \arguments{
 \item{data}{Data of returns for one or multiple assets or portfolios.}
@@ -24,6 +25,10 @@ the standard error of the estimated standard deviation. One of:
 \item{cleanOutliers}{Boolean variable to indicate whether the pre-whitenning of the influence functions TS should be done through a robust filter.}
 
 \item{fitting.method}{Distribution used in the standard errors computation. Should be one of "Exponential" (default) or "Gamma".}
+
+\item{freq.include}{Frequency domain inclusion criteria. Must be one of "All" (default), "Decimate" or "Truncate."}
+
+\item{freq.par}{Percentage of the frequency used if \code{"freq.include"} is "Decimate" or "Truncate." Default is 0.5.}
 
 \item{a}{First adaptive method parameter.}
 
