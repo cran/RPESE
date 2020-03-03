@@ -38,7 +38,7 @@ printSE <- function(SE.data, round.digit = 3, round.out = TRUE){
   list.names = names(SE.data)
   SE.data.df = data.frame(t(SE.data[[1]]))
   for(i in 2:length(list.names)){
-    SE.data.df = cbind(SE.data.df, SE.data[[i]])
+    SE.data.df = cbind(SE.data.df, SE.data[[i]]$se)
   }
   colnames(SE.data.df) = list.names
   rownames(SE.data.df) = colnames(SE.data[[1]])

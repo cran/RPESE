@@ -1,14 +1,14 @@
 # Compute the standard error for the xts object
 SE.xts = function(x, se.fun, myfun, myfun.IF,
                   prewhiten=FALSE, cleanOutliers=FALSE, fitting.method=c("Exponential", "Gamma")[1],
-                  freq.include=c("All", "Decimate", "Truncate")[1], freq.par=0.5,
+                  freq.include=c("All", "Decimate", "Truncate")[1], freq.par=0.5, d.GLM.EN = 5,
                   ...){
   if (is.vector(x) || is.null(ncol(x)) || ncol(x) == 1) {
     x <- as.numeric(x)
     #    if(na.rm) x <- na.omit(x)
     return(se.fun(x = x, myfun = myfun, myfun.IF = myfun.IF,
                   prewhiten=prewhiten, cleanOutliers=cleanOutliers, fitting.method=fitting.method,
-                  freq.include=freq.include, freq.par=freq.par,
+                  freq.include=freq.include, freq.par=freq.par, d.GLM.EN = d.GLM.EN,
                   ...))
   }
   else {
@@ -16,7 +16,7 @@ SE.xts = function(x, se.fun, myfun, myfun.IF,
     #    if(na.rm) x <- na.omit(x)
     return(apply(x, 2, se.fun, myfun = myfun, myfun.IF = myfun.IF,
                  prewhiten=prewhiten, cleanOutliers=cleanOutliers, fitting.method=fitting.method,
-                 freq.include=freq.include, freq.par=freq.par,
+                 freq.include=freq.include, freq.par=freq.par, d.GLM.EN = d.GLM.EN,
                  ...))
   }
 }
@@ -45,12 +45,13 @@ SE.BOOT.cor = function(x, myfun, myfun.IF, prewhiten=FALSE, ..., nsim = 1000,
 }
 
 # Compute the standard error using GLM-EN approach for serially correlated data using RPEGLMEN
-SE.IF.cor = function(x, myfun.IF, return.coeffs = FALSE, d.GLM.EN = 5, alpha.EN = 0.5, keep = 1,
+SE.IF.cor = function(x, myfun.IF,
+                     d.GLM.EN = 5, alpha.EN = 0.5, keep = 1,
                      standardize = FALSE,
                      prewhiten=FALSE, cleanOutliers=FALSE, fitting.method=c("Exponential", "Gamma")[1],
                      freq.include=c("All", "Decimate", "Truncate")[1], freq.par=0.5,
+                     return.coef=FALSE,
                      ...){
-  d = d.GLM.EN
   data.IF = myfun.IF(x, prewhiten=prewhiten, cleanOutliers=cleanOutliers, ...)
   if(prewhiten){
     ar.coeffs <- as.numeric(arima(x=x, order=c(1,0,0), include.mean=TRUE)$coef[1])
@@ -58,15 +59,16 @@ SE.IF.cor = function(x, myfun.IF, return.coeffs = FALSE, d.GLM.EN = 5, alpha.EN 
     ar.coeffs <- NULL
   }
   tmp = SE.glmnet_exp(data.IF, standardize = standardize,
-                      return.coeffs = return.coeffs, d = d, alpha.EN = alpha.EN, keep = keep,
+                      d = d.GLM.EN, alpha.EN = alpha.EN, keep = keep,
                       fitting.method = fitting.method,
                       freq.include = freq.include, freq.par = freq.par,
                       prewhiten = prewhiten, ar.coeffs = ar.coeffs,
+                      return.coef = return.coef,
                       ...)
-  if(return.coeffs){
+  if(return.coef){
     coeffs = tmp[[2]]
     tmp = tmp[[1]]
-    return(list(sqrt(tmp), coeffs))
+    return(list(se=sqrt(tmp), coef=coeffs))
   }
   return(sqrt(tmp))
 }

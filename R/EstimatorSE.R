@@ -19,10 +19,12 @@
 #' \code{"BOOTiid"}, \code{"BOOTcor"}, or \code{"none"}.
 #' @param cleanOutliers Boolean variable to indicate whether the pre-whitenning of the influence functions TS should be done through a robust filter.
 #' @param fitting.method Distribution used in the standard errors computation. Should be one of "Exponential" (default) or "Gamma".
+#' @param d.GLM.EN Order of the polynomial for the Exponential or Gamma fitting. Default polynomial order of 5.
 #' @param freq.include Frequency domain inclusion criteria. Must be one of "All" (default), "Decimate" or "Truncate."
 #' @param freq.par Percentage of the frequency used if \code{"freq.include"} is "Decimate" or "Truncate." Default is 0.5.
 #' @param a First adaptive method parameter.
 #' @param b Second adaptive method parameter.
+#' @param return.coef Boolean variable to indicate whether the coefficients of the Exponential or Gamma fit are returned. Default is FALSE.
 #' @param ... Additional parameters.
 #'
 #' @return A vector standard error estimates.
@@ -50,10 +52,11 @@ EstimatorSE <- function(data,
                         estimator.fun = c("Mean","SD","VaR","ES","SR","SoR","ESratio","VaRratio",
                                           "SoR","LPM","OmegaRatio","SemiSD","RachevRatio"),
                         se.method = c("IFiid","IFcor","IFcorAdapt","IFcorPW","BOOTiid","BOOTcor"),
-                        cleanOutliers=FALSE,
-                        fitting.method=c("Exponential", "Gamma")[1],
+                        cleanOutliers = FALSE,
+                        fitting.method = c("Exponential", "Gamma")[1], d.GLM.EN = 5,
                         freq.include=c("All", "Decimate", "Truncate")[1], freq.par=0.5,
-                        a=0.3, b=0.7,
+                        a = 0.3, b = 0.7,
+                        return.coef=FALSE,
                         ...){
 
   estimator.fun = estimator.fun[1]
@@ -122,24 +125,38 @@ EstimatorSE <- function(data,
     none = NULL,
     IFiid = SE.xts(data, SE.IF.iid, myfun, myfun.IF, ...),
     IFcor = SE.xts(data, SE.IF.cor, myfun, myfun.IF,
-                   prewhiten=FALSE, cleanOutliers=cleanOutliers, fitting.method=fitting.method,
+                   prewhiten=FALSE, cleanOutliers=cleanOutliers, fitting.method=fitting.method, d.GLM.EN=d.GLM.EN,
                    freq.include=freq.include, freq.par=freq.par,
+                   return.coef=return.coef,
                    ...),
     IFcorPW = SE.xts(data, SE.IF.cor, myfun, myfun.IF,
-                   prewhiten=TRUE, cleanOutliers=cleanOutliers, fitting.method=fitting.method,
-                   freq.include=freq.include, freq.par=freq.par,
-                   ...),
+                     prewhiten=TRUE, cleanOutliers=cleanOutliers, fitting.method=fitting.method, d.GLM.EN=d.GLM.EN,
+                     freq.include=freq.include, freq.par=freq.par,
+                     return.coef = return.coef,
+                     ...),
     IFcorAdapt = list(cor=SE.xts(data, SE.IF.cor, myfun, myfun.IF, prewhiten=FALSE,
-                                 cleanOutliers=cleanOutliers, fitting.method=fitting.method,
+                                 cleanOutliers=cleanOutliers, fitting.method=fitting.method, d.GLM.EN=d.GLM.EN,
                                  freq.include=freq.include, freq.par=freq.par,
+                                 return.coef=return.coef,
                                  ...),
                       corPW=SE.xts(data, SE.IF.cor, myfun, myfun.IF, prewhiten=TRUE,
-                                   cleanOutliers=cleanOutliers, fitting.method=fitting.method,
+                                   cleanOutliers=cleanOutliers, fitting.method=fitting.method, d.GLM.EN=d.GLM.EN,
                                    freq.include=freq.include, freq.par=freq.par,
+                                   return.coef=return.coef,
                                    ...)),
     BOOTiid = SE.xts(data, SE.BOOT.iid, myfun, myfun.IF, ...),
-    BOOTcor = SE.xts(data, SE.BOOT.cor, myfun, myfun.IF,...)
+    BOOTcor = SE.xts(data, SE.BOOT.cor, myfun, myfun.IF, ...)
   )
+
+  # Adjusting the output for coefficients
+  if(return.coef && (se.method=="IFcor" || se.method=="IFcorPW"))
+    res <- list(se=sapply(res, function(l) l[[1]]), coef=sapply(res, function(l) l[[2]])) else{
+      if(se.method=="IFcorAdapt"){
+        res$cor <- list(se=sapply(res$cor, function(l) l[[1]]))
+        res$corPW <- list(se=sapply(res$corPW, function(l) l[[1]]))
+      } else
+        res <- list(se=res, coef=NULL)
+  }
 
   # Adaptive method computation of weighted estimates
   if(se.method=="IFcorAdapt"){
@@ -149,8 +166,8 @@ EstimatorSE <- function(data,
         w = 0 else if(a<=ar1.param & ar1.param<=b)
           w = (ar1.param - a)/(b - a) else
             w = 1
-      res$corAdapt = (1-w)*res$cor + w*res$corPW
-      names(res$corAdapt) = colnames(data)
+      res$corAdapt$se = (1-w)*res$cor$se + w*res$corPW$se
+      names(res$corAdapt$se) = colnames(data)
     } else{
       for(my.col in 1:ncol(data)){
         temp.data = data[, my.col]
@@ -159,11 +176,11 @@ EstimatorSE <- function(data,
           w = 0 else if(a<=ar1.param & ar1.param<=b)
             w = (ar1.param - a)/(b - a) else
               w = 1
-        res$corAdapt[my.col] = (1-w)*res$cor[my.col] + w*res$corPW[my.col]
+        res$corAdapt$se[my.col] = (1-w)*res$cor$se[my.col] + w*res$corPW$se[my.col]
       }
-      names(res$corAdapt) = colnames(data)
+      names(res$corAdapt$se) = colnames(data)
     }
-    return(res$corAdapt)
+    return(list(se=res$corAdapt$se, coef=NULL))
   } else
     return(res)
 }

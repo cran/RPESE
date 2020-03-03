@@ -11,6 +11,7 @@
 #' \code{"BOOTiid"}, \code{"BOOTcor"}.
 #' @param cleanOutliers Boolean variable to indicate whether the pre-whitenning of the influence functions TS should be done through a robust filter.
 #' @param fitting.method Distribution used in the standard errors computation. Should be one of "Exponential" (default) or "Gamma".
+#' @param d.GLM.EN Order of the polynomial for the Exponential or Gamma fitting. Default polynomial order of 5.
 #' @param freq.include Frequency domain inclusion criteria. Must be one of "All" (default), "Decimate" or "Truncate."
 #' @param freq.par Percentage of the frequency used if \code{"freq.include"} is "Decimate" or "Truncate." Default is 0.5.
 #' @param ... Additional parameters.
@@ -37,7 +38,7 @@
 #'
 OmegaRatio.SE <- function(data, const = 0, k = 4,
                           se.method=c("IFiid","IFcor","IFcorAdapt","IFcorPW","BOOTiid","BOOTcor")[c(1,3)],
-                          cleanOutliers=FALSE, fitting.method=c("Exponential", "Gamma")[1],
+                          cleanOutliers=FALSE, fitting.method=c("Exponential", "Gamma")[1], d.GLM.EN = 5,
                           freq.include=c("All", "Decimate", "Truncate")[1], freq.par=0.5,
                           ...){
   data = checkData(data)
@@ -53,7 +54,7 @@ OmegaRatio.SE <- function(data, const = 0, k = 4,
                                   const = const, k = k,
                                   se.method = mymethod,
                                   cleanOutliers=cleanOutliers,
-                                  fitting.method=fitting.method,
+                                  fitting.method=fitting.method, d.GLM.EN=d.GLM.EN,
                                   freq.include=freq.include, freq.par=freq.par,
                                   ...)
     }

@@ -33,10 +33,10 @@ SE.glmnet_exp <- function(data, ...,
                           d=7, alpha.EN=0.5,
                           keep=1,
                           standardize = FALSE,
-                          return.coeffs = FALSE,
                           prewhiten = FALSE, ar.coeffs=NULL,
                           fitting.method = c("Exponential", "Gamma")[1],
-                          freq.include=c("All", "Decimate", "Truncate")[1], freq.par=0.5){
+                          freq.include=c("All", "Decimate", "Truncate")[1], freq.par=0.5,
+                          return.coef = FALSE){
   ##### perform prewhitening
 
   N=length(data)
@@ -85,8 +85,8 @@ SE.glmnet_exp <- function(data, ...,
       res = RPEGLMEN::glmnet_exp(x.mat, my.periodogram, ..., alpha.EN = alpha.EN)
 
 
-  # Step 3: return the estimated variance, and coeffs if return.coeffs = TRUE
-  if(return.coeffs){
+  # Step 3: return the estimated variance, and coeffs if return.coef = TRUE
+  if(return.coef){
     if(standardize){
       variance = exp(sum(res * c(1, -mean_vec / sd_vec)))/N
       if(prewhiten)
@@ -101,8 +101,7 @@ SE.glmnet_exp <- function(data, ...,
     return(list(variance, coeffs))
   }
 
-
-  if (standardize){
+  if(standardize){
     variance = exp(sum(res * c(1, -mean_vec / sd_vec)))/N
     if(prewhiten)
       variance = variance / ( 1 - sum(ar.coeffs))^2
