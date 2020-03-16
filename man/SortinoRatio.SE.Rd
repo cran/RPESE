@@ -15,6 +15,7 @@ SortinoRatio.SE(
   d.GLM.EN = 5,
   freq.include = c("All", "Decimate", "Truncate")[1],
   freq.par = 0.5,
+  corOut = c("none", "retCor", "retIFCor")[1],
   ...
 )
 }
@@ -39,6 +40,8 @@ the standard error of the estimated standard deviation. One or a combination of:
 \item{freq.include}{Frequency domain inclusion criteria. Must be one of "All" (default), "Decimate" or "Truncate."}
 
 \item{freq.par}{Percentage of the frequency used if \code{"freq.include"} is "Decimate" or "Truncate." Default is 0.5.}
+
+\item{corOut}{Return correlation of the returns or the influence function transformed returns. Must be one of "retCor", "retIFCor" or "none" (default).}
 
 \item{...}{Additional parameters.}
 }

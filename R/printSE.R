@@ -30,24 +30,24 @@
 #' printSE(ES.out)
 #'
 printSE <- function(SE.data, round.digit = 3, round.out = TRUE){
-  N = length(SE.data)
-  # if(N != 2) {
-  #   cat("the SE.dataults do not contain standard errors!\n")
-  #   return()
-  # }
-  list.names = names(SE.data)
-  SE.data.df = data.frame(t(SE.data[[1]]))
+
+  N <- length(SE.data)
+  list.names <- names(SE.data)
+  SE.data.df <- data.frame(t(SE.data[[1]]))
   for(i in 2:length(list.names)){
-    SE.data.df = cbind(SE.data.df, SE.data[[i]]$se)
+    if(list.names[i] %in% c("IFiid","IFcor","IFcorAdapt","IFcorPW","BOOTiid","BOOTcor"))
+      SE.data.df = cbind(SE.data.df, SE.data[[i]]$se) else
+        if(list.names[i] %in% c("none", "retCor","retIFCor", "retIFCorPW"))
+          SE.data.df = cbind(SE.data.df, SE.data[[i]]$out)
   }
-  colnames(SE.data.df) = list.names
-  rownames(SE.data.df) = colnames(SE.data[[1]])
-#  SE.data.df = round(SE.data.df, digits = round.digit)
+  colnames(SE.data.df) <- list.names
+  rownames(SE.data.df) <- colnames(SE.data[[1]])
+
+  # Adding the
+
+  # Rounding of the output
   if(round.out){
     return(round(SE.data.df, digits = round.digit))
-  }
-  return(SE.data.df)
-  # SE.data.df[2] = paste("(",SE.data.df[,2],")",sep="")
-  # SE.data.df[,-1] = apply(as.data.frame(SE.data.df[,-1]),2,function(x) paste("(",x,")",sep=""))
-
+  } else
+    return(SE.data.df)
 }

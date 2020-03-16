@@ -1,3 +1,6 @@
+#'
+#' @import RPEIF
+#'
 #' @title Standard Error Estimate for Sortino Ratio of Returns
 #'
 #' @description \code{SortinoRatio.SE} computes the standard error of the Sortino ratio of the returns.
@@ -34,6 +37,7 @@
 #' @param d.GLM.EN Order of the polynomial for the Exponential or Gamma fitting. Default polynomial order of 5.
 #' @param freq.include Frequency domain inclusion criteria. Must be one of "All" (default), "Decimate" or "Truncate."
 #' @param freq.par Percentage of the frequency used if \code{"freq.include"} is "Decimate" or "Truncate." Default is 0.5.
+#' @param corOut Return correlation of the returns or the influence function transformed returns. Must be one of "retCor", "retIFCor" or "none" (default).
 #' @param ... Additional parameters.
 #'
 #' @return A vector or a list depending on \code{se.method}.
@@ -61,6 +65,7 @@ SortinoRatio.SE <- function (data, MAR = 0, threshold = c("mean", "const")[1],
                              se.method=c("IFiid","IFcor","IFcorAdapt","IFcorPW","BOOTiid","BOOTcor")[c(1,3)],
                              cleanOutliers=FALSE, fitting.method=c("Exponential", "Gamma")[1], d.GLM.EN = 5,
                              freq.include=c("All", "Decimate", "Truncate")[1], freq.par=0.5,
+                             corOut = c("none", "retCor","retIFCor")[1],
                              ...)
   { # @author Brian G. Peterson and Xin Chen
     # modified from function by Sankalp Upadhyay <sankalp.upadhyay [at] gmail [dot] com> with permission
@@ -81,20 +86,25 @@ SortinoRatio.SE <- function (data, MAR = 0, threshold = c("mean", "const")[1],
 
     #if we have a weights vector, use it
     if(!is.null(weights)){
-      data=Return.portfolio(data,weights,...)
+      data=Return.portfolio(data,weights, ...)
     }
 
     if(!is.null(se.method)){
       res=list(SoR=mySoR)
       # for each of the method specified in se.method, compute the standard error
       for(mymethod in se.method){
-        res[[mymethod]]=EstimatorSE(data, estimator.fun = "SoR", const = MAR, threshold=threshold, MAR = MAR,
+        res[[mymethod]]=EstimatorSE(data, estimator.fun = "SoR", const = MAR, threshold=threshold,
                                     se.method = mymethod,
                                     cleanOutliers=cleanOutliers,
                                     fitting.method=fitting.method, d.GLM.EN=d.GLM.EN,
                                     freq.include=freq.include, freq.par=freq.par,
                                     ...)
       }
+
+      # Adding the correlations to the list
+      res <- Add_Correlations(res=res, data=data, cleanOutliers=cleanOutliers, corOut=corOut, IF.func=IF.SoR, ...)
+
+      # Returning the output
       return(res)
     } else {
       return(mySoR)

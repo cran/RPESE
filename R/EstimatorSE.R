@@ -50,11 +50,11 @@
 #'
 EstimatorSE <- function(data,
                         estimator.fun = c("Mean","SD","VaR","ES","SR","SoR","ESratio","VaRratio",
-                                          "SoR","LPM","OmegaRatio","SemiSD","RachevRatio"),
+                                          "LPM","OmegaRatio","SemiSD","RachevRatio"),
                         se.method = c("IFiid","IFcor","IFcorAdapt","IFcorPW","BOOTiid","BOOTcor"),
                         cleanOutliers = FALSE,
                         fitting.method = c("Exponential", "Gamma")[1], d.GLM.EN = 5,
-                        freq.include=c("All", "Decimate", "Truncate")[1], freq.par=0.5,
+                        freq.include = c("All", "Decimate", "Truncate")[1], freq.par = 0.5,
                         a = 0.3, b = 0.7,
                         return.coef=FALSE,
                         ...){
@@ -64,7 +64,7 @@ EstimatorSE <- function(data,
 
   # Available estimator functions
   estimators.available <- c("Mean","SD","VaR","ES","SR","SoR",
-                            "ESratio", "VaRratio", "SoR", "LPM", "OmegaRatio", "SemiSD", "RachevRatio")
+                            "ESratio", "VaRratio", "LPM", "OmegaRatio", "SemiSD", "RachevRatio")
   # Checking if the specified risk measure is available
   if(!(estimator.fun %in% estimators.available))
     stop("The specified estimator function is not available.")
@@ -92,7 +92,7 @@ EstimatorSE <- function(data,
 
   myfun = switch(estimator.fun,
                  Mean = mean,
-                 SD = sd,
+                 SD = StdDev,
                  VaR = VaR.hist,
                  ES = ES.hist,
                  SR = SR,
@@ -105,20 +105,20 @@ EstimatorSE <- function(data,
                  RachevRatio = RachevRatio,
                  stop("The estimator.fun specified is not implemented yet, please contact Anthony Christidis (anthony.christidis@stat.ubc.ca) or submit an issue at the github repository")
   )
-  myfun.IF = switch (estimator.fun,
-                     Mean = IF.mean,
-                     SD = IF.SD,
-                     VaR = IF.VaR,
-                     ES = IF.ES,
-                     SR = IF.SR,
-                     SoR = IF.SoR,
-                     ESratio = IF.ESratio,
-                     VaRratio = IF.VaRratio,
-                     LPM = IF.LPM,
-                     OmegaRatio = IF.Omega,
-                     SemiSD = IF.SemiSD,
-                     RachevRatio = IF.RachR,
-                     stop("The estimator.fun specified is not implemented yet, please contact Anthony Christidis (anthony.christidis@stat.ubc.ca) or submit an issue at the github repository")
+  myfun.IF = switch(estimator.fun,
+                    Mean = IF.mean,
+                    SD = IF.SD,
+                    VaR = IF.VaR,
+                    ES = IF.ES,
+                    SR = IF.SR,
+                    SoR = IF.SoR,
+                    ESratio = IF.ESratio,
+                    VaRratio = IF.VaRratio,
+                    LPM = IF.LPM,
+                    OmegaRatio = IF.Omega,
+                    SemiSD = IF.SemiSD,
+                    RachevRatio = IF.RachR,
+                    stop("The estimator.fun specified is not implemented yet, please contact Anthony Christidis (anthony.christidis@stat.ubc.ca) or submit an issue at the github repository")
   )
 
   res <- switch(se.method,
@@ -156,7 +156,7 @@ EstimatorSE <- function(data,
         res$corPW <- list(se=sapply(res$corPW, function(l) l[[1]]))
       } else
         res <- list(se=res, coef=NULL)
-  }
+    }
 
   # Adaptive method computation of weighted estimates
   if(se.method=="IFcorAdapt"){
