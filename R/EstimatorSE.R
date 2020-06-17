@@ -1,7 +1,6 @@
 #'
 #' @import RPEIF
 #' @import PerformanceAnalytics
-#' @import RPEGLMEN
 #' @importFrom stats cov quantile SSD arima lm coef ar na.omit fft
 #' @importFrom boot boot tsboot
 #' @importFrom xts is.xts
