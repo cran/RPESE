@@ -15,3 +15,6 @@
 
 # RPESE 1.0.4
 * Fix error for prewhitening.
+
+# RPESE 1.0.5
+* Another error for prewhitening. Now the residuals are passed on for the GLM fit.

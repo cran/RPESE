@@ -55,6 +55,7 @@ SE.IF.cor = function(x, myfun.IF,
   data.IF = myfun.IF(x, prewhiten=prewhiten, cleanOutliers=cleanOutliers, ...)
   if(prewhiten){
     ar.coeffs <- as.numeric(arima(x=data.IF, order=c(1,0,0), include.mean=TRUE)$coef[1])
+    dat.IF <- as.numeric(arima(x=data.IF, order=c(1,0,0), include.mean=TRUE)$res)
   } else{
     ar.coeffs <- NULL
   }
