@@ -6,7 +6,6 @@
 \usage{
 SemiSD.SE(
   data,
-  rf = 0,
   se.method = c("IFiid", "IFcor", "IFcorAdapt", "IFcorPW", "BOOTiid", "BOOTcor")[1:2],
   cleanOutliers = FALSE,
   fitting.method = c("Exponential", "Gamma")[1],
@@ -14,20 +13,20 @@ SemiSD.SE(
   freq.include = c("All", "Decimate", "Truncate")[1],
   freq.par = 0.5,
   corOut = c("none", "retCor", "retIFCor", "retIFCorPW")[1],
+  return.coef = FALSE,
   ...
 )
 }
 \arguments{
 \item{data}{Data of returns for one or multiple assets or portfolios.}
 
-\item{rf}{Risk-free interest rate.}
-
 \item{se.method}{A character string indicating which method should be used to compute
 the standard error of the estimated standard deviation. One or a combination of:
 \code{"IFiid"} (default), \code{"IFcor"} (default), \code{"IFcorPW"}, \code{"IFcorAdapt"},
 \code{"BOOTiid"}, \code{"BOOTcor"}, or \code{"none"}.}
 
-\item{cleanOutliers}{Boolean variable to indicate whether the pre-whitenning of the influence functions TS should be done through a robust filter.}
+\item{cleanOutliers}{Boolean variable to indicate whether the pre-whitenning of the influence functions TS should be done through
+a robust filter. Default if FALSE.}
 
 \item{fitting.method}{Distribution used in the standard errors computation. Should be one of "Exponential" (default) or "Gamma".}
 
@@ -37,7 +36,10 @@ the standard error of the estimated standard deviation. One or a combination of:
 
 \item{freq.par}{Percentage of the frequency used if \code{"freq.include"} is "Decimate" or "Truncate." Default is 0.5.}
 
-\item{corOut}{Return correlation of the returns or the influence function transformed returns. Must be one of "retCor", "retIFCor" or "none" (default).}
+\item{corOut}{Return correlation of the returns or the influence function transformed returns.
+Must be one of "retCor", "retIFCor" or "none" (default).}
+
+\item{return.coef}{Boolean variable to indicate whether the coefficients of the penalized GLM fit are returned. Default if FALSE.}
 
 \item{...}{Additional parameters.}
 }
@@ -48,18 +50,17 @@ A vector or a list depending on \code{se.method}.
 \code{SemiSD.SE} computes the standard error of the SSD of the returns.
 }
 \examples{
-# Loading data from PerformanceAnalytics
-data(edhec, package = "PerformanceAnalytics")
-class(edhec)
+# Loading data
+data(edhec)
 # Changing the data colnames
 names(edhec) = c("CA", "CTA", "DIS", "EM", "EMN",
                  "ED", "FIA", "GM", "LS", "MA",
                  "RV", "SS", "FOF")
 # Computing the standard errors for
 # the two influence functions based approaches
-SemiSD.SE(edhec, se.method=c("IFiid","IFcor"),
-          cleanOutliers=FALSE,
-          fitting.method=c("Exponential", "Gamma")[1])
+SemiSD.SE(edhec, se.method = c("IFiid","IFcor"),
+          cleanOutliers = FALSE,
+          fitting.method = c("Exponential", "Gamma")[1])
 
 }
 \author{

@@ -14,38 +14,36 @@
 #' @author Anthony-Alexander Christidis, \email{anthony.christidis@stat.ubc.ca}
 #'
 #' @examples
-#' # Loading data from PerformanceAnalytics
-#' data(edhec, package = "PerformanceAnalytics")
-#' class(edhec)
+#' # Loading data
+#' data(edhec)
 #' # Changing the data colnames
 #' names(edhec) = c("CA", "CTA", "DIS", "EM", "EMN",
 #'                  "ED", "FIA", "GM", "LS", "MA",
 #'                  "RV", "SS", "FOF")
 #' # Computing the standard errors for
 #' # the two influence functions based approaches
-#' ES.out <- ES.SE(edhec, se.method=c("IFiid","IFcor"),
-#'                 cleanOutliers=FALSE,
-#'                 fitting.method=c("Exponential", "Gamma")[1])
+#' ES.out <- ES.SE(edhec, se.method = c("IFiid","IFcor"),
+#'                 cleanOutliers = FALSE,
+#'                 fitting.method = c("Exponential", "Gamma")[1])
 #' # Print the output
 #' printSE(ES.out)
 #'
 printSE <- function(SE.data, round.digit = 3, round.out = TRUE){
 
-  N <- length(SE.data)
+  # Printing formatting
   list.names <- names(SE.data)
-  SE.data.df <- data.frame(t(SE.data[[1]]))
+  row
+  SE.data.df <- as.numeric(data.frame(t(SE.data[[1]])))
   for(i in 2:length(list.names)){
-    if(list.names[i] %in% c("IFiid","IFcor","IFcorAdapt","IFcorPW","BOOTiid","BOOTcor"))
-      SE.data.df = cbind(SE.data.df, SE.data[[i]]$se) else
+    if(list.names[i] %in% c("IFiid","IFcor", "IFcorAdapt", "IFcorPW", "BOOTiid", "BOOTcor"))
+      SE.data.df <- cbind(SE.data.df, SE.data[[i]]$se) else
         if(list.names[i] %in% c("none", "retCor","retIFCor", "retIFCorPW"))
-          SE.data.df = cbind(SE.data.df, SE.data[[i]]$out)
+          SE.data.df <- cbind(SE.data.df, SE.data[[i]]$out)
   }
   colnames(SE.data.df) <- list.names
-  rownames(SE.data.df) <- colnames(SE.data[[1]])
+  rownames(SE.data.df) <- names(SE.data[[1]])
 
-  # Adding the
-
-  # Rounding of the output
+  # Rounding of the output of value returned
   if(round.out){
     return(round(SE.data.df, digits = round.digit))
   } else

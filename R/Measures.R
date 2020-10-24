@@ -1,121 +1,213 @@
-################### This file includes all the functions to compute nonparametric sample estimators of risk/performance measures
+# ================
+# RPE Estimators
+# Point Estimates
+# ================
 
-# Compute sample Sharpe Ratio from data
-SR=function(data,...,rf=0){
-  mu.hat=mean(data)
-  sigma.hat=sd(data)
-  return((mu.hat-rf)/sigma.hat)
+# Downside SR
+DSR <- function(returns, rf = 0, ...){
+
+  # Computing the mean of the returns
+  mu.hat <- mean(returns)
+  # Computing the SemiSD
+  semisd <- sqrt((1/length(returns))*sum((returns-mu.hat)^2*(returns <= mu.hat)))
+  # Computing the SemiMean
+  semimean <- (1/length(returns))*sum((returns-mu.hat)*(returns <= mu.hat))
+  # Computing DSR of the returns
+  DSR <- (mu.hat-rf)/(semisd*sqrt(2))
+
+  # Returning estimate
+  return(DSR)
 }
 
+# ES
+ES <- function(returns, alpha.ES = 0.05, ...){
 
-# Compute sample value-at-risk
-VaR.hist=function(data,...,alpha=0.05){
-  return(-quantile(data,alpha))
+  # Finding the quantile of the density fit based on the desired tail probability
+  quantile.alpha <- as.numeric(quantile(returns, alpha.ES))
+  # Computing the ES parameter based on the desired tail probability
+  ES <- -mean(returns[returns <= quantile.alpha])
+
+  # Returning estimate
+  return(ES)
 }
 
-# Compute sample Expected Shortfall
-ES.hist=function(data,...,alpha.ES=0.05){
-  return(-mean(data[data<=quantile(data,alpha.ES)]))
+# ES Ratio
+ESratio <- function(returns, alpha = 0.1, rf = 0, ...){
+
+  # Computing the mean of the returns
+  mu.hat <- mean(returns)
+  # Computing the SD of the returns
+  sigma.hat <- mean((returns-mu.hat)^2)
+  # Storing the negative value of the VaR based on the desired alpha
+  q.alpha <- as.numeric(quantile(returns, alpha))
+  # Computing the ES of the returns
+  ES <- -mean(returns[returns <= q.alpha])
+  # Computing the ESratio of the returns
+  ESratio <- (mu.hat-rf)/ES
+
+  # Returning estimate
+  return(ESratio)
 }
 
-# Compute sample Robust Expected Shortfall
-RES=function(data,...,alpha=0.01,beta=0.1){
-  return(-mean(data[(data<=quantile(data,beta))&(data>=quantile(data,alpha))]))
+# LPM
+LPM <- function(returns, const = 0, order = 1, ...){
+
+  # Returning estimate
+  return(LPM(returns, const = const, order = 1, ...))
 }
 
-# Compute sample Sortino Ratio with mean threshold
-SoR = function(data, rf = 0, MAR = 0, threshold=c("mean", "const")[1], ...){
+# Mean
+Mean <- function(returns, ...){
 
-  if(threshold=="mean"){
-    mu.hat = mean(data)
-    sigma.minus.hat = sqrt(mean((data-mu.hat)^2*(data<=mu.hat)))
-    SoR.hat = (mu.hat-rf)/sigma.minus.hat
-    return(SoR.hat)
-  } else if (threshold=="const"){
-    mu.hat = mean(data)
-    sigma.minus.hat = sqrt(mean((data-MAR)^2*(data<=MAR)))
-    SoR.const.hat = (mu.hat-MAR)/sigma.minus.hat
-    return(SoR.const.hat)
-  }
+  # Returning estimate
+  return(mean(returns))
 }
 
-# Compute sample Sortino Ratio with mean threshold
-SoR.mean = function(data, ..., rf = 0){
-  mu.hat = mean(data)
-  sigma.minus.hat = sqrt(mean((data-mu.hat)^2*(data<=mu.hat)))
-  SoR.hat = (mu.hat-rf)/sigma.minus.hat
-  return(SoR.hat)
+# Omega Ratio
+OmegaRatio <- function(returns, const = 0, ...){
+
+  # Computing Omega
+  Omega <- 1 + (mean(returns)-const)/LPM(returns, const = const, order = 1)
+
+  # Returning estimate
+  return(Omega)
 }
 
-# Compute sample Sortino Ratio with constant threshold
-SoR.const = function(data, ..., MAR = 0){
-  mu.hat = mean(data)
-  sigma.minus.hat = sqrt(mean((data-MAR)^2*(data<=MAR)))
-  SoR.const.hat = (mu.hat-MAR)/sigma.minus.hat
-  return(SoR.const.hat)
+# Rachev Ratio
+RachevRatio <- function(returns, alpha = 0.1, beta = 0.1, ...){
+
+  # Finding the quantile of the density fit based on the desired lower tail probability
+  q.alpha <- as.numeric(quantile(returns, alpha))
+  # Computing the ES of the returns (lower tail)
+  es.alpha <- -mean(returns[returns <= q.alpha])
+  # Finding the quantile of the density fit based on the desired upper tail probability
+  q.beta <- as.numeric(quantile(returns, 1-beta))
+  # Computing the ES of the returns (upper tail)
+  eg.beta <- mean(returns[returns >= q.beta])
+  # Computing Rachev ratio
+  RachevRatio <- eg.beta/es.alpha
+
+  # Returning estimate
+  return(RachevRatio)
 }
 
+# Semi-SD
+SemiSD <- function(returns, ...){
 
-# Compute sample ESratio
-ESratio = function(data, ..., alpha = 0.05, rf = 0){
-  mu.hat=mean(data)
-  return((mu.hat - rf)/ES.hist(data, alpha = alpha))
+  # Computing the mean of the returns
+  mu.hat <- mean(returns)
+  # Computing the SemiSD
+  SemiSD <- sqrt((1/length(returns))*sum((returns-mu.hat)^2*(returns <= mu.hat)))
+
+  # Returning estimate
+  return(SemiSD)
 }
 
-# Compute sample VaRratio
-VaRratio = function(data, ..., alpha = 0.05, rf = 0){
-  mu.hat=mean(data)
-  return((mu.hat - rf)/VaR.hist(data, alpha = alpha))
+# SD
+SD <- function(returns, ...){
+
+  # Returning the estimate
+  return(sd(returns))
 }
 
-# Compute sample lower partial moment
-LPM = function(data, ..., const = 0, k = 1){
-  N = length(data)
-  return(1/N*sum((const-data[data<=const])^k)^(1/k))
+# SoR
+SoR <- function(returns, rf = 0, const = 0, threshold = c("mean", "const")[1], ...){
+
+  # Case where we want mean threshold
+  if(threshold == "mean")
+    return(SoR_M(returns = returns, rf = rf)) else if(threshold == "const")
+      return(SoR_C(returns = returns, const = const))
 }
 
-# Compute sample Omega Ratio
-OmegaRatio = function(data, ..., const = 0){
-  N = length(data)
-  OmegaPlus = sum(data[data>=const]-const)/N
-  OmegaMinus = sum(const-data[data<=const])/N
-  return(OmegaPlus/OmegaMinus)
+# SoR (Constant Threshold)
+SoR_C <- function(returns, const = 0, ...){
+
+  # Computation the mean of the returns
+  mu.hat <- mean(returns)
+  # Computating the LPM of the returns
+  lpm2 <- LPM(returns, const = const, order = 2)
+  # Computing the Sortino ratio of the returns
+  SoR <- (mu.hat-const)/sqrt(lpm2)
+
+  # Returning estimate
+  return(SoR)
 }
 
-# Compute Semi-Standard Deviation
-SemiSD = function(data, ..., rf=0){
+# SoR (Mean Threshold)
+SoR_M <- function(returns, rf = 0, ...){
 
-    mySSD = PerformanceAnalytics::SemiDeviation(data-rf)
-    return(mySSD)
+  # Computing the mean of the returns
+  mu.hat <- mean(returns)
+  # Computing the SemiSD
+  semisd <- sqrt((1/length(returns))*sum((returns-mu.hat)^2*(returns <= mu.hat)))
+  # Computing the SemiMean
+  semimean <- (1/length(returns))*sum((returns-mu.hat)*(returns <= mu.hat))
+  # Computing Sortino ratio of the returns
+  SoR <- (mu.hat-rf)/(semisd*sqrt(2))
+
+  # Returning estimate
+  return(SoR)
 }
 
-# Compute Rachev Ratio
-RachevRatio = function(data, ..., alpha=0.1, beta=0.1, rf=0){
+# SR
+SR <- function(returns, rf = 0, ...){
 
-  # Computing the mean of the data
-  mu.hat <- mean(data)
-  # Computing the SD of the data
-  sigma.hat <- mean((data-mu.hat)^2)
+  # Computing the mean of the returns
+  mu.hat <- mean(returns)
+  # Computing the SD of the returns
+  sd.hat <- sd(returns)
+  # Computing the SR of the returns
+  SR <- (mu.hat-rf)/sd.hat
 
-  # Computing the VaR of the data (lower tail)
-  VaR.hat.lower <- -quantile(data, alpha)
-  # Storing the negative value of the VaR based on the desired alpha (lower tail)
-  quantile.lower <- -VaR.hat.lower
-  # Computing the ES of the data (lower tail)
-  ES.lower <- -mean(data[data<=-VaR.hat.lower])
-
-  # Computing the VaR of the data (upper tail)
-  n.upper <- floor((1-beta)*length(data))
-  sorted.returns <- sort(as.numeric(data))
-  VaR.hat.upper <- sorted.returns[n.upper]
-  # Storing the negative value of the VaR based on the desired alpha (upper tail)
-  quantile.upper <- VaR.hat.upper
-  # Computing the ES of the data (upper tail)
-  ES.upper <- mean(data[data>=quantile.upper])
-
-  # Computing Rachev Ratio
-  myRachevRatio <- ES.upper/ES.lower
-
-  # Return Rachev Ratio
-  return(myRachevRatio)
+  # Returning estimate
+  return(SR)
 }
+
+# VaR
+VaR <- function(returns, alpha = 0.05, ...){
+
+  # Computing VaR
+  VaR <- -quantile(returns, alpha)
+
+  # Returning estimate
+  return(VaR)
+}
+
+# VaR Ratio
+VaRratio <- function(returns, alpha = 0.1, rf = 0, ...){
+
+  # Mean of returns
+  mu.hat <- mean(returns)
+  # Fitting a density function to the returns
+  density.fit <- approxfun(density(returns))
+  # Probability for the obtained quantile
+  fq.alpha <- quantile(returns, alpha)
+  # Finding the quantile of the density fit based on the desired tail probability
+  VaR <- -quantile(returns, alpha)
+  # Computing the VaR ratio
+  VaRratio <- (mu.hat - rf)/VaR
+
+  # Returning estimate
+  return(VaRratio)
+}
+
+# =================
+# Function for LPM
+# =================
+
+LPM <- function(returns, const = 0, order = 1, ...){
+
+  # Computing the LPM
+  return(1/length(returns)*sum((const-returns[returns <= const])^order))
+}
+
+# =================
+# Function for UPM
+# =================
+
+UPM <- function(returns, const = 0, order = 1, ...){
+
+  # Computing the UPM
+  return(1/length(returns)*sum((const-returns[returns >= const])^order))
+}
+

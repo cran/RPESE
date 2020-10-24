@@ -16,6 +16,7 @@ ESratio.SE(
   freq.include = c("All", "Decimate", "Truncate")[1],
   freq.par = 0.5,
   corOut = c("none", "retCor", "retIFCor", "retIFCorPW")[1],
+  return.coef = FALSE,
   ...
 )
 }
@@ -31,7 +32,8 @@ the standard error of the estimated standard deviation. One or a combination of:
 \code{"IFiid"} (default), \code{"IFcor"}, \code{"IFcorPW"}, \code{"IFcorAdapt"} (default),
 \code{"BOOTiid"} or \code{"BOOTcor"}.}
 
-\item{cleanOutliers}{Boolean variable to indicate whether the pre-whitenning of the influence functions TS should be done through a robust filter.}
+\item{cleanOutliers}{Boolean variable to indicate whether the pre-whitenning of the influence functions TS should be done through
+a robust filter. Default if FALSE.}
 
 \item{fitting.method}{Distribution used in the standard errors computation. Should be one of "Exponential" (default) or "Gamma".}
 
@@ -39,9 +41,12 @@ the standard error of the estimated standard deviation. One or a combination of:
 
 \item{freq.include}{Frequency domain inclusion criteria. Must be one of "All" (default), "Decimate" or "Truncate."}
 
-\item{freq.par}{Percentage of the frequency used if \code{"freq.include"} is "Decimate" or "Truncate. Default is 0.5.}
+\item{freq.par}{Percentage of the frequency used if \code{"freq.include"} is "Decimate" or "Truncate." Default is 0.5.}
 
-\item{corOut}{Return correlation of the returns or the influence function transformed returns. Must be one of "retCor", "retIFCor" or "none" (default).}
+\item{corOut}{Return correlation of the returns or the influence function transformed returns.
+Must be one of "retCor", "retIFCor" or "none" (default).}
+
+\item{return.coef}{Boolean variable to indicate whether the coefficients of the penalized GLM fit are returned. Default if FALSE.}
 
 \item{...}{Additional parameters.}
 }
@@ -52,9 +57,8 @@ A vector or a list depending on \code{se.method}.
 \code{ESratio.SE} computes the standard error of the expected shortfall ratio of the returns.
 }
 \examples{
-# Loading data from PerformanceAnalytics
-data(edhec, package = "PerformanceAnalytics")
-class(edhec)
+# Loading data
+data(edhec)
 # Changing the data colnames
 names(edhec) = c("CA", "CTA", "DIS", "EM", "EMN",
                  "ED", "FIA", "GM", "LS", "MA",

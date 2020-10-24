@@ -6,9 +6,9 @@
 \usage{
 EstimatorSE(
   data,
-  estimator.fun = c("Mean", "SD", "VaR", "ES", "SR", "SoR", "ESratio", "VaRratio",
-    "LPM", "OmegaRatio", "SemiSD", "RachevRatio"),
-  se.method = c("IFiid", "IFcor", "IFcorAdapt", "IFcorPW", "BOOTiid", "BOOTcor"),
+  estimator.fun = c("DSR", "ES", "ESratio", "LPM", "Mean", "OmegaRatio", "RachevRatio",
+    "SD", "SemiSD", "SR", "SoR", "VaR", "VaRratio")[1],
+  se.method = c("IFiid", "IFcor", "IFcorAdapt", "IFcorPW", "BOOTiid", "BOOTcor")[1],
   cleanOutliers = FALSE,
   fitting.method = c("Exponential", "Gamma")[1],
   d.GLM.EN = 5,
@@ -30,7 +30,8 @@ the standard error of the estimated standard deviation. One of:
 \code{"IFiid"}, \code{"IFcor"}, \code{"IFcorAdapt"}, \code{"IFcorPW"},
 \code{"BOOTiid"}, \code{"BOOTcor"}, or \code{"none"}.}
 
-\item{cleanOutliers}{Boolean variable to indicate whether the pre-whitenning of the influence functions TS should be done through a robust filter.}
+\item{cleanOutliers}{Boolean variable to indicate whether the pre-whitenning of the influence functions TS should be done through
+a robust filter. Default if FALSE.}
 
 \item{fitting.method}{Distribution used in the standard errors computation. Should be one of "Exponential" (default) or "Gamma".}
 
@@ -55,18 +56,17 @@ A vector standard error estimates.
 \code{EstimatorSE} computes the standard error for specified risk and performance measures.
 }
 \examples{
-# Loading data from PerformanceAnalytics
-data(edhec, package = "PerformanceAnalytics")
-class(edhec)
+# Loading data
+data(edhec)
 # Changing the data colnames
 names(edhec) = c("CA", "CTA", "DIS", "EM", "EMN",
                  "ED", "FIA", "GM", "LS", "MA",
                  "RV", "SS", "FOF")
 # Computing the standard errors for
 # the three influence functions based approaches
-EstimatorSE(edhec[,"CA"], se.method=c("IFcor"),
-            cleanOutliers=FALSE,
-            fitting.method=c("Exponential", "Gamma")[1])
+EstimatorSE(edhec[,"CA"], se.method = c("IFcor"),
+            cleanOutliers = FALSE,
+            fitting.method = c("Exponential", "Gamma")[1])
 
 }
 \author{

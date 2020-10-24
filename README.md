@@ -1,5 +1,5 @@
 
-[![Build Status](https://travis-ci.com/AnthonyChristidis/RPESE.svg?branch=master)](https://travis-ci.com/AnthonyChristidis/RPESE) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/RPESE)](https://cran.r-project.org/package=RPESE) [![Downloads](http://cranlogs.r-pkg.org/badges/RPESE)](https://cran.r-project.org/package=RPESE)
+[![Build Status](https://travis-ci.org/AnthonyChristidis/RPESE.svg?branch=master)](https://travis-ci.com/AnthonyChristidis/RPESE) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/RPESE)](https://cran.r-project.org/package=RPESE) [![Downloads](http://cranlogs.r-pkg.org/badges/RPESE)](https://cran.r-project.org/package=RPESE)
 
 RPESE
 =====
@@ -28,15 +28,15 @@ devtools::install_github("AnthonyChristidis/RPESE")
 ``` r
 # Sample Code
 library(RPESE)
-# Loading data from Performance Analytics
-data(edhec, package="PerformanceAnalytics")
+# Loading managers data
+data(edhec)
 colnames(edhec) = c("CA", "CTAG", "DIS", "EM","EMN", "ED", "FIA",
                     "GM", "LS", "MA", "RV", "SS", "FoF")
 # Computing the standard errors for the three influence functions based approaches
-ES.out <- ES.SE(edhec, se.method=c("IFiid","IFcor","IFcorAdapt"),
-                prewhiten=FALSE, 
-                cleanOutliers=FALSE, 
-                fitting.method=c("Exponential", "Gamma")[1])
+ES.out <- ES.SE(edhec, se.method = c("IFiid","IFcor","IFcorAdapt"),
+                prewhiten = FALSE, 
+                cleanOutliers = FALSE, 
+                fitting.method = c("Exponential", "Gamma")[1])
 # Print output
 printSE(ES.out)
 ```

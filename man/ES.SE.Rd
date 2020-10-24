@@ -14,20 +14,22 @@ ES.SE(
   freq.include = c("All", "Decimate", "Truncate")[1],
   freq.par = 0.5,
   corOut = c("none", "retCor", "retIFCor", "retIFCorPW")[1],
+  return.coef = FALSE,
   ...
 )
 }
 \arguments{
 \item{data}{Data of returns for one or multiple assets or portfolios.}
 
-\item{p}{Confidence level for calculation. Default value is p=0.95.}
+\item{p}{Confidence level for calculation. Default value is p = 0.95.}
 
 \item{se.method}{A character string indicating which method should be used to compute
 the standard error of the estimated standard deviation. One or a combination of:
 \code{"IFiid"} (default), \code{"IFcor"} (default), \code{"IFcorPW"}, \code{"IFcorAdapt"},
 \code{"BOOTiid"} or \code{"BOOTcor"}.}
 
-\item{cleanOutliers}{Boolean variable to indicate whether the pre-whitenning of the influence functions TS should be done through a robust filter.}
+\item{cleanOutliers}{Boolean variable to indicate whether the pre-whitenning of the influence functions TS should be done through
+a robust filter. Default if FALSE.}
 
 \item{fitting.method}{Distribution used in the standard errors computation. Should be one of "Exponential" (default) or "Gamma".}
 
@@ -37,7 +39,10 @@ the standard error of the estimated standard deviation. One or a combination of:
 
 \item{freq.par}{Percentage of the frequency used if \code{"freq.include"} is "Decimate" or "Truncate." Default is 0.5.}
 
-\item{corOut}{Return correlation of the returns or the influence function transformed returns. Must be one of "retCor", "retIFCor" or "none" (default).}
+\item{corOut}{Return correlation of the returns or the influence function transformed returns.
+Must be one of "retCor", "retIFCor" or "none" (default).}
+
+\item{return.coef}{Boolean variable to indicate whether the coefficients of the penalized GLM fit are returned. Default if FALSE.}
 
 \item{...}{Additional parameters.}
 }
@@ -47,78 +52,19 @@ A vector or a list depending on \code{se.method}.
 \description{
 \code{ES.SE} computes the standard error of the expected shortfall of the returns.
 }
-\note{
-The option to \code{invert} the ES measure should appease both
-academics and practitioners.  The mathematical definition of ES as the
-negative value of extreme losses will (usually) produce a positive number.
-Practitioners will argue that ES denotes a loss, and should be internally
-consistent with the quantile (a negative number).  For tables and charts,
-different preferences may apply for clarity and compactness.  As such, we
-provide the option, and set the default to TRUE to keep the return
-consistent with prior versions of PerformanceAnalytics, but make no value
-judgement on which approach is preferable.
-}
-\section{Background}{
- This function provides several estimation methods for
-the Expected Shortfall (ES) (also called Expected Tail Loss (ETL)
-or Conditional Value at Risk (CVaR)) of a return series and the Component ES
-(ETL/CVaR) of a portfolio.
-
-At a preset probability level denoted \eqn{c}, which typically is between 1
-and 5 per cent, the ES of a return series is the negative value of the
-expected value of the return when the return is less than its
-\eqn{c}-quantile.  Unlike value-at-risk, conditional value-at-risk has all
-the properties a risk measure should have to be coherent and is a convex
-function of the portfolio weights (Pflug, 2000).  With a sufficiently large
-data set, you may choose to estimate ES with the sample average of all
-returns that are below the \eqn{c} empirical quantile. More efficient
-estimates of VaR are obtained if a (correct) assumption is made on the
-return distribution, such as the normal distribution. If your return series
-is skewed and/or has excess kurtosis, Cornish-Fisher estimates of ES can be
-more appropriate. For the ES of a portfolio, it is also of interest to
-decompose total portfolio ES into the risk contributions of each of the
-portfolio components. For the above mentioned ES estimators, such a
-decomposition is possible in a financially meaningful way.
-}
-
 \examples{
-# Loading data from PerformanceAnalytics
-data(edhec, package = "PerformanceAnalytics")
-class(edhec)
+# Loading data
+data(edhec)
 # Changing the data colnames
-names(edhec) = c("CA", "CTA", "DIS", "EM", "EMN",
+names(edhec)  =  c("CA", "CTA", "DIS", "EM", "EMN",
                  "ED", "FIA", "GM", "LS", "MA",
                  "RV", "SS", "FOF")
 # Computing the standard errors for
 # the two influence functions based approaches
-ES.SE(edhec, se.method=c("IFiid","IFcor"),
-      cleanOutliers=FALSE,
-      fitting.method=c("Exponential", "Gamma")[1])
+ES.SE(edhec, se.method = c("IFiid","IFcor"),
+      cleanOutliers = FALSE,
+      fitting.method = c("Exponential", "Gamma")[1])
 
-}
-\references{
-Boudt, Kris, Peterson, Brian, and Christophe Croux. 2008.
-Estimation and decomposition of downside risk for portfolios with non-normal
-returns. 2008. The Journal of Risk, vol. 11, 79-103.
-
-Cont, Rama, Deguest, Romain and Giacomo Scandolo. Robustness and sensitivity
-analysis of risk measurement procedures. Financial Engineering Report No.
-2007-06, Columbia University Center for Financial Engineering.
-
-Laurent Favre and Jose-Antonio Galeano. Mean-Modified Value-at-Risk
-Optimization with Hedge Funds. Journal of Alternative Investment, Fall 2002,
-v 5.
-
-Martellini, Lionel, and Volker Ziemann.  Improved Forecasts of Higher-Order
-Comoments and Implications for Portfolio Selection. 2007. EDHEC Risk and
-Asset Management Research Centre working paper.
-
-Pflug, G. Ch.  Some remarks on the value-at-risk and the conditional
-value-at-risk. In S. Uryasev, ed., Probabilistic Constrained Optimization:
-Methodology and Applications, Dordrecht: Kluwer, 2000, 272-281.
-
-Scaillet, Olivier. Nonparametric estimation and sensitivity analysis of
-expected shortfall. Mathematical Finance, 2002, vol. 14, 74-86.
 }
 \author{
 Xin Chen, \email{chenx26@uw.edu}

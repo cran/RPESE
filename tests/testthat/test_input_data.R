@@ -12,7 +12,7 @@ context("Verify input for functions.")
 test_that("Error for invalid function inputs", {
 
   # Loading data from Performance Analytics
-  data(edhec, package="PerformanceAnalytics")
+  data(edhec)
   colnames(edhec) = c("CA", "CTAG", "DIS", "EM","EMN", "ED", "FIA",
                       "GM", "LS", "MA", "RV", "SS", "FoF")
 
