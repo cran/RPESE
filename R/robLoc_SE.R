@@ -1,13 +1,13 @@
 #'
-#' @import RPEIF
+#' @import RPEIF RobStatTM
 #'
-#' @title Standard Error Estimate for Rachev Ratio of Returns
+#' @title Standard Error Estimate for Robust Location M-Estimator of Returns
 #'
-#' @description \code{RachevRatio.SE} computes the standard error of the Rachev ratio of the returns.
+#' @description \code{robLoc.SE} computes the standard error of the robust location M-estimator of the returns.
 #'
 #' @param data Data of returns for one or multiple assets or portfolios.
-#' @param alpha Lower tail probability.
-#' @param beta Upper tail probability.
+#' @param family Family for robust m-estimator of location. Must be one of "mopt" (default), "opt" or "bisquare".
+#' @param eff Tuning parameter for the normal distribution efficiency. Default is 0.99.
 #' @param se.method A character string indicating which method should be used to compute
 #' the standard error of the estimated standard deviation. One or a combination of:
 #' \code{"IFiid"} (default), \code{"IFcor"}, \code{"IFcorPW"}, \code{"IFcorAdapt"} (default),
@@ -38,32 +38,36 @@
 #'                  "RV", "SS", "FOF")
 #' # Computing the standard errors for
 #' # the two influence functions based approaches
-#' RachevRatio.SE(edhec, se.method = c("IFiid","IFcorAdapt"),
-#'                cleanOutliers = FALSE,
-#'                fitting.method = c("Exponential", "Gamma")[1])
+#' robLoc.SE(edhec, se.method = c("IFiid","IFcorAdapt"),
+#'           fitting.method = c("Exponential", "Gamma")[1],
+#'           family = "mopt", eff = 0.95)
 #'
-RachevRatio.SE <- function(data, alpha = 0.1, beta = 0.1,
-                           se.method = c("IFiid","IFcor","IFcorAdapt","IFcorPW","BOOTiid","BOOTcor")[c(1,3)],
-                           cleanOutliers = FALSE, fitting.method = c("Exponential", "Gamma")[1], d.GLM.EN  =  5,
-                           freq.include = c("All", "Decimate", "Truncate")[1], freq.par = 0.5,
-                           corOut  =  c("none", "retCor","retIFCor", "retIFCorPW")[1],
-                           return.coef = FALSE,
-                           ...){
+robLoc.SE <- function(data, family = c("mopt", "opt", "bisquare")[1], eff = 0.95,
+                      se.method = c("IFiid","IFcor","IFcorAdapt","IFcorPW","BOOTiid","BOOTcor")[c(1,3)],
+                      cleanOutliers = FALSE, fitting.method = c("Exponential", "Gamma")[1], d.GLM.EN  =  5,
+                      freq.include = c("All", "Decimate", "Truncate")[1], freq.par = 0.5,
+                      corOut  =  c("none", "retCor","retIFCor", "retIFCorPW")[1],
+                      return.coef = FALSE,
+                      ...){
+
+  # Outlier cleaning disabled for robLoc.SE
+  if(cleanOutliers)
+    warning("Outlier cleaning disabled for robLoc.SE.")
 
   # Point estimate
   if(is.null(dim(data)) || ncol(data) == 1)
-    point.est <- RachevRatio(data, alpha = alpha, beta = beta) else
-      point.est <- apply(data, 2, function(x) RachevRatio(x, alpha = alpha, beta = beta))
+    point.est <- robLoc(data, family = family, eff = eff) else
+      point.est <- apply(data, 2, function(x) robLoc(x, family = family, eff = eff))
 
     # SE Computation
     if(is.null(se.method)){
       return(point.est)
     } else{
-      SE.out <- list(RachevRatio = point.est)
+      SE.out <- list(robLoc = point.est)
       for(mymethod in se.method){
-        SE.out[[mymethod]] <- EstimatorSE(data, estimator.fun = "RachevRatio", alpha = alpha, beta = beta,
+        SE.out[[mymethod]] <- EstimatorSE(data, estimator.fun = "robLoc", family = family, eff = eff,
                                           se.method = mymethod,
-                                          cleanOutliers = cleanOutliers,
+                                          cleanOutliers = FALSE,
                                           fitting.method = fitting.method, d.GLM.EN = d.GLM.EN,
                                           freq.include = freq.include, freq.par = freq.par,
                                           return.coef = return.coef,
@@ -71,7 +75,7 @@ RachevRatio.SE <- function(data, alpha = 0.1, beta = 0.1,
       }
 
       # Adding the correlations to the list
-      SE.out <- Add_Correlations(SE.out = SE.out, data = data, cleanOutliers = cleanOutliers, corOut = corOut, IF.func = IF.RachevRatio, ...)
+      SE.out <- Add_Correlations(SE.out = SE.out, data = data, cleanOutliers = FALSE, corOut = corOut, IF.func = IF.robLoc, ...)
 
       # Returning the output
       return(SE.out)

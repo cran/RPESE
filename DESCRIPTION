@@ -1,8 +1,8 @@
 Package: RPESE
 Type: Package
 Title: Estimates of Standard Errors for Risk and Performance Measures
-Version: 1.1.0
-Date: 2020-10-23
+Version: 1.2.0
+Date: 2021-03-08
 Author: Anthony Christidis <anthony.christidis@stat.ubc.ca>, 
   Xin Chen <chenx26@uw.edu>
 Maintainer: Anthony Christidis <anthony.christidis@stat.ubc.ca>
@@ -11,13 +11,13 @@ Description: Estimates of standard errors of popular risk and performance
              Chen and Martin (2018) <https://www.ssrn.com/abstract=3085672>.
 Biarch: true
 License: GPL (>= 2)
-Imports: xts, zoo, boot, sandwich, RPEIF, RPEGLMEN,
+Imports: xts, zoo, boot, RPEIF, RPEGLMEN, RobStatTM
 Suggests: testthat, R.rsp
 Depends: R (>= 3.5.0)
 RoxygenNote: 7.0.2
 VignetteBuilder: R.rsp
 LazyData: true
 NeedsCompilation: no
-Packaged: 2020-10-24 08:12:14 UTC; antho
+Packaged: 2021-03-10 00:13:03 UTC; antho
 Repository: CRAN
-Date/Publication: 2020-10-24 08:20:02 UTC
+Date/Publication: 2021-03-10 16:00:02 UTC

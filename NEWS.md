@@ -24,3 +24,7 @@
 
 # RPESE 1.1.0
 * Adapt RPESE to changes to RPEIF 1.1.0
+
+# RPESE 1.2.0
+* Add the robust m-estimator of location.
+* Update vignette for new robust estimator and fix old typos.

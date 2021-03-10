@@ -7,7 +7,7 @@
 EstimatorSE(
   data,
   estimator.fun = c("DSR", "ES", "ESratio", "LPM", "Mean", "OmegaRatio", "RachevRatio",
-    "SD", "SemiSD", "SR", "SoR", "VaR", "VaRratio")[1],
+    "robLoc", "SD", "SemiSD", "SR", "SoR", "VaR", "VaRratio")[1],
   se.method = c("IFiid", "IFcor", "IFcorAdapt", "IFcorPW", "BOOTiid", "BOOTcor")[1],
   cleanOutliers = FALSE,
   fitting.method = c("Exponential", "Gamma")[1],

@@ -48,9 +48,9 @@
 #'
 EstimatorSE <- function(data,
                         estimator.fun = c("DSR", "ES","ESratio","LPM",
-                                          "Mean","OmegaRatio","RachevRatio","SD",
-                                          "SemiSD","SR","SoR","VaR",
-                                          "VaRratio")[1],
+                                          "Mean","OmegaRatio","RachevRatio","robLoc",
+                                          "SD","SemiSD","SR","SoR",
+                                          "VaR","VaRratio")[1],
                         se.method = c("IFiid","IFcor","IFcorAdapt","IFcorPW","BOOTiid","BOOTcor")[1],
                         cleanOutliers = FALSE,
                         fitting.method = c("Exponential", "Gamma")[1], d.GLM.EN = 5,
@@ -61,9 +61,10 @@ EstimatorSE <- function(data,
 
   # Available estimator functions
   estimators.available <- c("DSR", "ES","ESratio","LPM",
-                            "Mean","OmegaRatio","RachevRatio","SD",
-                            "SemiSD","SR","SoR","VaR",
-                            "VaRratio")
+                            "Mean","OmegaRatio","RachevRatio","robLoc",
+                            "SD","SemiSD","SR","SoR",
+                            "VaR","VaRratio")
+
   # Checking if the specified risk measure is available
   if(!(estimator.fun %in% estimators.available))
     stop("The specified estimator function is not available.")
@@ -102,6 +103,7 @@ EstimatorSE <- function(data,
                     SoR = SoR,
                     SR = SR,
                     RachevRatio = RachevRatio,
+                    robLoc = robLoc,
                     VaR = VaR,
                     VaRratio = VaRratio,
                     stop("The estimator.fun specified is not implemented yet, please contact Anthony Christidis (anthony.christidis@stat.ubc.ca) or submit an issue at the github repository.")
@@ -116,6 +118,7 @@ EstimatorSE <- function(data,
                        Mean = IF.mean,
                        OmegaRatio = IF.OmegaRatio,
                        RachevRatio = IF.RachevRatio,
+                       robLoc = IF.robLoc,
                        SD = IF.SD,
                        SemiSD = IF.SemiSD,
                        SoR = IF.SoR,
