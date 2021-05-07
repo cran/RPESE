@@ -41,7 +41,7 @@
 #'        fitting.method = c("Exponential", "Gamma")[1])
 #'
 DSR.SE <- function(data, rf = 0,
-                   se.method = c("IFiid","IFcor","IFcorAdapt","IFcorPW","BOOTiid","BOOTcor")[1:2],
+                   se.method = c("IFiid","IFcor","IFcorAdapt","IFcorPW","BOOTiid","BOOTcor")[1,4],
                    cleanOutliers = FALSE, fitting.method = c("Exponential", "Gamma")[1], d.GLM.EN = 5,
                    freq.include = c("All","Decimate","Truncate")[1], freq.par = 0.5,
                    corOut = c("none","retCor","retIFCor", "retIFCorPW")[1],

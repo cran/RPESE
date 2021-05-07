@@ -48,7 +48,7 @@
 #'
 EstimatorSE <- function(data,
                         estimator.fun = c("DSR", "ES","ESratio","LPM",
-                                          "Mean","OmegaRatio","RachevRatio","robLoc",
+                                          "Mean","OmegaRatio","RachevRatio","robMean",
                                           "SD","SemiSD","SR","SoR",
                                           "VaR","VaRratio")[1],
                         se.method = c("IFiid","IFcor","IFcorAdapt","IFcorPW","BOOTiid","BOOTcor")[1],
@@ -61,7 +61,7 @@ EstimatorSE <- function(data,
 
   # Available estimator functions
   estimators.available <- c("DSR", "ES","ESratio","LPM",
-                            "Mean","OmegaRatio","RachevRatio","robLoc",
+                            "Mean","OmegaRatio","RachevRatio","robMean",
                             "SD","SemiSD","SR","SoR",
                             "VaR","VaRratio")
 
@@ -103,7 +103,7 @@ EstimatorSE <- function(data,
                     SoR = SoR,
                     SR = SR,
                     RachevRatio = RachevRatio,
-                    robLoc = robLoc,
+                    robMean = robMean,
                     VaR = VaR,
                     VaRratio = VaRratio,
                     stop("The estimator.fun specified is not implemented yet, please contact Anthony Christidis (anthony.christidis@stat.ubc.ca) or submit an issue at the github repository.")
@@ -118,7 +118,7 @@ EstimatorSE <- function(data,
                        Mean = IF.mean,
                        OmegaRatio = IF.OmegaRatio,
                        RachevRatio = IF.RachevRatio,
-                       robLoc = IF.robLoc,
+                       robMean = IF.robMean,
                        SD = IF.SD,
                        SemiSD = IF.SemiSD,
                        SoR = IF.SoR,

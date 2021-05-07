@@ -1,9 +1,9 @@
 #'
 #' @import RPEIF RobStatTM
 #'
-#' @title Standard Error Estimate for Robust Location M-Estimator of Returns
+#' @title Standard Error Estimate for Robust Location (Mean) M-Estimator of Returns
 #'
-#' @description \code{robLoc.SE} computes the standard error of the robust location M-estimator of the returns.
+#' @description \code{robMean.SE} computes the standard error of the robust location (mean) M-estimator of the returns.
 #'
 #' @param data Data of returns for one or multiple assets or portfolios.
 #' @param family Family for robust m-estimator of location. Must be one of "mopt" (default), "opt" or "bisquare".
@@ -38,34 +38,34 @@
 #'                  "RV", "SS", "FOF")
 #' # Computing the standard errors for
 #' # the two influence functions based approaches
-#' robLoc.SE(edhec, se.method = c("IFiid","IFcorAdapt"),
-#'           fitting.method = c("Exponential", "Gamma")[1],
-#'           family = "mopt", eff = 0.95)
+#' robMean.SE(edhec, se.method = c("IFiid","IFcorAdapt"),
+#'            fitting.method = c("Exponential", "Gamma")[1],
+#'            family = "mopt", eff = 0.95)
 #'
-robLoc.SE <- function(data, family = c("mopt", "opt", "bisquare")[1], eff = 0.95,
-                      se.method = c("IFiid","IFcor","IFcorAdapt","IFcorPW","BOOTiid","BOOTcor")[c(1,3)],
-                      cleanOutliers = FALSE, fitting.method = c("Exponential", "Gamma")[1], d.GLM.EN  =  5,
-                      freq.include = c("All", "Decimate", "Truncate")[1], freq.par = 0.5,
-                      corOut  =  c("none", "retCor","retIFCor", "retIFCorPW")[1],
-                      return.coef = FALSE,
-                      ...){
+robMean.SE <- function(data, family = c("mopt", "opt", "bisquare")[1], eff = 0.95,
+                       se.method = c("IFiid","IFcor","IFcorAdapt","IFcorPW","BOOTiid","BOOTcor")[c(1,4)],
+                       cleanOutliers = FALSE, fitting.method = c("Exponential", "Gamma")[1], d.GLM.EN  =  5,
+                       freq.include = c("All", "Decimate", "Truncate")[1], freq.par = 0.5,
+                       corOut  =  c("none", "retCor","retIFCor", "retIFCorPW")[1],
+                       return.coef = FALSE,
+                       ...){
 
-  # Outlier cleaning disabled for robLoc.SE
+  # Outlier cleaning disabled for robMean.SE
   if(cleanOutliers)
-    warning("Outlier cleaning disabled for robLoc.SE.")
+    warning("Outlier cleaning disabled for robMean.SE.")
 
   # Point estimate
   if(is.null(dim(data)) || ncol(data) == 1)
-    point.est <- robLoc(data, family = family, eff = eff) else
-      point.est <- apply(data, 2, function(x) robLoc(x, family = family, eff = eff))
+    point.est <- robMean(data, family = family, eff = eff) else
+      point.est <- apply(data, 2, function(x) robMean(x, family = family, eff = eff))
 
     # SE Computation
     if(is.null(se.method)){
       return(point.est)
     } else{
-      SE.out <- list(robLoc = point.est)
+      SE.out <- list(robMean = point.est)
       for(mymethod in se.method){
-        SE.out[[mymethod]] <- EstimatorSE(data, estimator.fun = "robLoc", family = family, eff = eff,
+        SE.out[[mymethod]] <- EstimatorSE(data, estimator.fun = "robMean", family = family, eff = eff,
                                           se.method = mymethod,
                                           cleanOutliers = FALSE,
                                           fitting.method = fitting.method, d.GLM.EN = d.GLM.EN,
@@ -75,7 +75,7 @@ robLoc.SE <- function(data, family = c("mopt", "opt", "bisquare")[1], eff = 0.95
       }
 
       # Adding the correlations to the list
-      SE.out <- Add_Correlations(SE.out = SE.out, data = data, cleanOutliers = FALSE, corOut = corOut, IF.func = IF.robLoc, ...)
+      SE.out <- Add_Correlations(SE.out = SE.out, data = data, cleanOutliers = FALSE, corOut = corOut, IF.func = IF.robMean, ...)
 
       # Returning the output
       return(SE.out)

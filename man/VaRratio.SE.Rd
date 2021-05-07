@@ -9,7 +9,7 @@ VaRratio.SE(
   alpha = 0.1,
   rf = 0,
   se.method = c("IFiid", "IFcor", "IFcorAdapt", "IFcorPW", "BOOTiid", "BOOTcor")[c(1,
-    3)],
+    4)],
   cleanOutliers = FALSE,
   fitting.method = c("Exponential", "Gamma")[1],
   d.GLM.EN = 5,

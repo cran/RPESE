@@ -92,13 +92,13 @@ RachevRatio <- function(returns, alpha = 0.1, beta = 0.1, ...){
 }
 
 # Robust Location M-estimator
-robLoc <- function(returns, family = c("mopt", "opt", "bisquare")[1], eff = 0.95, ...){
+robMean <- function(returns, family = c("mopt", "opt", "bisquare")[1], eff = 0.95, ...){
 
   # Computing robust location estimator
-  robLoc <- RobStatTM::locScaleM(returns, psi = family, eff = eff)$mu
+  robMean <- RobStatTM::locScaleM(returns, psi = family, eff = eff)$mu
 
   # Returning estimate
-  return(robLoc)
+  return(robMean)
 }
 
 # Semi-SD
