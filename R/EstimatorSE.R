@@ -35,7 +35,7 @@
 #'
 #' @examples
 #' # Loading data
-#' data(edhec)
+#' data(edhec, package = "PerformanceAnalytics")
 #' # Changing the data colnames
 #' names(edhec) = c("CA", "CTA", "DIS", "EM", "EMN",
 #'                  "ED", "FIA", "GM", "LS", "MA",
@@ -115,7 +115,7 @@ EstimatorSE <- function(data,
                        ES = IF.ES,
                        ESratio = IF.ESratio,
                        LPM = IF.LPM,
-                       Mean = IF.mean,
+                       Mean = IF.Mean,
                        OmegaRatio = IF.OmegaRatio,
                        RachevRatio = IF.RachevRatio,
                        robMean = IF.robMean,

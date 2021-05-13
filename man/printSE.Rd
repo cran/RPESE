@@ -21,7 +21,7 @@ A data frame with formatted output from standard error functions from \code{RPES
 }
 \examples{
 # Loading data
-data(edhec)
+data(edhec, package = "PerformanceAnalytics")
 # Changing the data colnames
 names(edhec) = c("CA", "CTA", "DIS", "EM", "EMN",
                  "ED", "FIA", "GM", "LS", "MA",

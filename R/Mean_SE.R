@@ -29,7 +29,7 @@
 #'
 #' @examples
 #' # Loading data
-#' data(edhec)
+#' data(edhec, package = "PerformanceAnalytics")
 #' # Changing the data colnames
 #' names(edhec) = c("CA", "CTA", "DIS", "EM", "EMN",
 #'                  "ED", "FIA", "GM", "LS", "MA",
@@ -69,7 +69,7 @@ Mean.SE <- function(data,
       }
 
       # Adding the correlations to the list
-      SE.out <- Add_Correlations(SE.out = SE.out, data = data, cleanOutliers = cleanOutliers, corOut = corOut, IF.func = IF.mean, ...)
+      SE.out <- Add_Correlations(SE.out = SE.out, data = data, cleanOutliers = cleanOutliers, corOut = corOut, IF.func = IF.Mean, ...)
 
       # Returning the output
       return(SE.out)

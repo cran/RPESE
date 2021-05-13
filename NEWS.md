@@ -32,3 +32,7 @@
 # RPESE 1.2.1
 * Update the name for robust mean function.
 * Change default SE methods for performance measures (Adapt -> PW)
+
+# RPESE 1.2.2
+* Update RPEIF function name for mean estimator.
+* Remove edhec data.

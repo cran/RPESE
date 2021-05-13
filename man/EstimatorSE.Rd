@@ -57,7 +57,7 @@ A vector standard error estimates.
 }
 \examples{
 # Loading data
-data(edhec)
+data(edhec, package = "PerformanceAnalytics")
 # Changing the data colnames
 names(edhec) = c("CA", "CTA", "DIS", "EM", "EMN",
                  "ED", "FIA", "GM", "LS", "MA",
