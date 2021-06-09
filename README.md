@@ -28,14 +28,13 @@ devtools::install_github("AnthonyChristidis/RPESE")
 ``` r
 # Sample Code
 library(RPESE)
-# Loading managers data
-data(edhec)
+# Loading hedge fund data
+data(edhec, package = "PerformanceAnalytics")
 colnames(edhec) = c("CA", "CTAG", "DIS", "EM","EMN", "ED", "FIA",
                     "GM", "LS", "MA", "RV", "SS", "FoF")
 # Computing the standard errors for the three influence functions based approaches
-ES.out <- ES.SE(edhec, se.method = c("IFiid","IFcor","IFcorAdapt"),
-                prewhiten = FALSE, 
-                cleanOutliers = FALSE, 
+ES.out <- ES.SE(edhec, se.method = c("IFiid","IFcor","IFcorPW"),
+                cleanOutliers = TRUE, 
                 fitting.method = c("Exponential", "Gamma")[1])
 # Print output
 printSE(ES.out)
