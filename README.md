@@ -1,5 +1,6 @@
 
-[![Build Status](https://travis-ci.org/AnthonyChristidis/RPESE.svg?branch=master)](https://travis-ci.com/AnthonyChristidis/RPESE) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/RPESE)](https://cran.r-project.org/package=RPESE) [![Downloads](http://cranlogs.r-pkg.org/badges/RPESE)](https://cran.r-project.org/package=RPESE)
+[![Build Status](https://app.travis-ci.com/AnthonyChristidis/RPESE.svg?branch=master)](https://app.travis-ci.com/AnthonyChristidis/RPESE)
+[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/RPESE)](https://cran.r-project.org/package=RPESE) [![Downloads](http://cranlogs.r-pkg.org/badges/RPESE)](https://cran.r-project.org/package=RPESE)
 
 RPESE
 =====

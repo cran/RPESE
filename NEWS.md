@@ -39,3 +39,6 @@
 
 # RPESE 1.2.3
 * Fix code errors in the vignette.
+
+# RPESE 1.2.4
+* Update Description file reference to technical article.
