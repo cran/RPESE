@@ -42,3 +42,6 @@
 
 # RPESE 1.2.4
 * Update Description file reference to technical article.
+
+# RPESE 1.2.5
+* Fix error in point estimate computation for Value-at-Risk.

@@ -7,7 +7,7 @@
 DSR.SE(
   data,
   rf = 0,
-  se.method = c("IFiid", "IFcor", "IFcorAdapt", "IFcorPW", "BOOTiid", "BOOTcor")[1, 4],
+  se.method = c("IFiid", "IFcor", "IFcorAdapt", "IFcorPW", "BOOTiid", "BOOTcor")[c(1, 4)],
   cleanOutliers = FALSE,
   fitting.method = c("Exponential", "Gamma")[1],
   d.GLM.EN = 5,
@@ -50,7 +50,7 @@ Must be one of "retCor", "retIFCor" or "none" (default).}
 A vector or a list depending on \code{se.method}.
 }
 \description{
-\code{ES.SE} computes the standard error of the downside Sharpe ratio of the returns.
+\code{DSR.SE} computes the standard error of the downside Sharpe ratio of the returns.
 }
 \examples{
 # Loading data

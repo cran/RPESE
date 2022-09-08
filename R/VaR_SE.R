@@ -51,8 +51,8 @@ VaR.SE <- function(data = NULL , alpha = 0.95,
 
   # Point estimate
   if(is.null(dim(data)) || ncol(data) == 1)
-    point.est <- VaR(data, alpha = alpha) else
-      point.est <- apply(data, 2, function(x) VaR(x, alpha = alpha))
+    point.est <- VaR(data, alpha = 1 - alpha) else
+      point.est <- apply(data, 2, function(x) VaR(x, alpha = 1 - alpha))
 
     # SE Computation
     if(is.null(se.method)){
@@ -60,7 +60,7 @@ VaR.SE <- function(data = NULL , alpha = 0.95,
     } else{
       SE.out <- list(VaR = point.est)
       for(mymethod in se.method){
-        SE.out[[mymethod]] <- EstimatorSE(data, estimator.fun = "VaR", alpha = alpha,
+        SE.out[[mymethod]] <- EstimatorSE(data, estimator.fun = "VaR", alpha = 1 - alpha,
                                           se.method = mymethod,
                                           cleanOutliers = cleanOutliers,
                                           fitting.method = fitting.method, d.GLM.EN = d.GLM.EN,

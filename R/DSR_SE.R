@@ -1,8 +1,9 @@
+#'
 #' @import RPEIF
 #'
 #' @title Standard Error Estimate for Downside Sharpe Ratio (DSR) of Returns
 #'
-#' @description \code{ES.SE} computes the standard error of the downside Sharpe ratio of the returns.
+#' @description \code{DSR.SE} computes the standard error of the downside Sharpe ratio of the returns.
 #'
 #' @param data Data of returns for one or multiple assets or portfolios.
 #' @param rf Risk free rate.
@@ -41,7 +42,7 @@
 #'        fitting.method = c("Exponential", "Gamma")[1])
 #'
 DSR.SE <- function(data, rf = 0,
-                   se.method = c("IFiid","IFcor","IFcorAdapt","IFcorPW","BOOTiid","BOOTcor")[1,4],
+                   se.method = c("IFiid","IFcor","IFcorAdapt","IFcorPW","BOOTiid","BOOTcor")[c(1,4)],
                    cleanOutliers = FALSE, fitting.method = c("Exponential", "Gamma")[1], d.GLM.EN = 5,
                    freq.include = c("All","Decimate","Truncate")[1], freq.par = 0.5,
                    corOut = c("none","retCor","retIFCor", "retIFCorPW")[1],

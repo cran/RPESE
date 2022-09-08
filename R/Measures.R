@@ -13,7 +13,7 @@ DSR <- function(returns, rf = 0, ...){
   # Computing the SemiMean
   semimean <- (1/length(returns))*sum((returns-mu.hat)*(returns <= mu.hat))
   # Computing DSR of the returns
-  DSR <- (mu.hat-rf)/(semisd*sqrt(2))
+  DSR <- (mu.hat)/(semisd*sqrt(2))
 
   # Returning estimate
   return(DSR)
