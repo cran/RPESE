@@ -56,17 +56,20 @@ A vector or a list depending on \code{se.method}.
 \code{VaRratio.SE} computes the standard error of the value-at-risk ratio of the returns.
 }
 \examples{
-# Loading data
-data(edhec, package = "PerformanceAnalytics")
-# Changing the data colnames
-names(edhec) = c("CA", "CTA", "DIS", "EM", "EMN",
-                 "ED", "FIA", "GM", "LS", "MA",
-                 "RV", "SS", "FOF")
-# Computing the standard errors for
-# the two influence functions based approaches
-VaRratio.SE(edhec, se.method = c("IFiid","IFcorAdapt"),
-            cleanOutliers = FALSE,
-            fitting.method = c("Exponential", "Gamma")[1])
+# Examples using PerformanceAnalytics data
+if (requireNamespace("PerformanceAnalytics", quietly = TRUE)) {
+  # Loading data
+  data(edhec, package = "PerformanceAnalytics")
+  # Changing the data colnames
+  names(edhec) <- c("CA", "CTA", "DIS", "EM", "EMN",
+                    "ED", "FIA", "GM", "LS", "MA",
+                    "RV", "SS", "FOF")
+  # Computing the standard errors for
+  # the two influence functions based approaches
+  VaRratio.SE(edhec, se.method = c("IFiid","IFcorAdapt"),
+              cleanOutliers = FALSE,
+              fitting.method = c("Exponential", "Gamma")[1])
+}
 
 }
 \author{

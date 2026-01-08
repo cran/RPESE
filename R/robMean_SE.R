@@ -30,17 +30,20 @@
 #' @author Anthony-Alexander Christidis, \email{anthony.christidis@stat.ubc.ca}
 #'
 #' @examples
-#' # Loading data
-#' data(edhec, package = "PerformanceAnalytics")
-#' # Changing the data colnames
-#' names(edhec)  =  c("CA", "CTA", "DIS", "EM", "EMN",
-#'                  "ED", "FIA", "GM", "LS", "MA",
-#'                  "RV", "SS", "FOF")
-#' # Computing the standard errors for
-#' # the two influence functions based approaches
-#' robMean.SE(edhec, se.method = c("IFiid","IFcorAdapt"),
-#'            fitting.method = c("Exponential", "Gamma")[1],
-#'            family = "mopt", eff = 0.95)
+#' # Examples using PerformanceAnalytics data
+#' if (requireNamespace("PerformanceAnalytics", quietly = TRUE)) {
+#'   # Loading data
+#'   data(edhec, package = "PerformanceAnalytics")
+#'   # Changing the data colnames
+#'   names(edhec) <- c("CA", "CTA", "DIS", "EM", "EMN",
+#'                     "ED", "FIA", "GM", "LS", "MA",
+#'                     "RV", "SS", "FOF")
+#'   # Computing the standard errors for
+#'   # the two influence functions based approaches
+#'   robMean.SE(edhec, se.method = c("IFiid","IFcorAdapt"),
+#'              fitting.method = c("Exponential", "Gamma")[1],
+#'              family = "mopt", eff = 0.95)
+#' }
 #'
 robMean.SE <- function(data, family = c("mopt", "opt", "bisquare")[1], eff = 0.95,
                        se.method = c("IFiid","IFcor","IFcorAdapt","IFcorPW","BOOTiid","BOOTcor")[c(1,4)],

@@ -30,17 +30,20 @@
 #' @author Anthony-Alexander Christidis, \email{anthony.christidis@stat.ubc.ca}
 #'
 #' @examples
-#' # Loading data
-#' data(edhec, package = "PerformanceAnalytics")
-#' # Changing the data colnames
-#' names(edhec) = c("CA", "CTA", "DIS", "EM", "EMN",
-#'                  "ED", "FIA", "GM", "LS", "MA",
-#'                  "RV", "SS", "FOF")
-#' # Computing the standard errors for
-#' # the two influence functions based approaches
-#' VaRratio.SE(edhec, se.method = c("IFiid","IFcorAdapt"),
-#'             cleanOutliers = FALSE,
-#'             fitting.method = c("Exponential", "Gamma")[1])
+#' # Examples using PerformanceAnalytics data
+#' if (requireNamespace("PerformanceAnalytics", quietly = TRUE)) {
+#'   # Loading data
+#'   data(edhec, package = "PerformanceAnalytics")
+#'   # Changing the data colnames
+#'   names(edhec) <- c("CA", "CTA", "DIS", "EM", "EMN",
+#'                     "ED", "FIA", "GM", "LS", "MA",
+#'                     "RV", "SS", "FOF")
+#'   # Computing the standard errors for
+#'   # the two influence functions based approaches
+#'   VaRratio.SE(edhec, se.method = c("IFiid","IFcorAdapt"),
+#'               cleanOutliers = FALSE,
+#'               fitting.method = c("Exponential", "Gamma")[1])
+#' }
 #'
 VaRratio.SE <- function(data, alpha = 0.1, rf = 0,
                         se.method = c("IFiid","IFcor","IFcorAdapt","IFcorPW","BOOTiid","BOOTcor")[c(1,4)],

@@ -56,17 +56,20 @@ A vector standard error estimates.
 \code{EstimatorSE} computes the standard error for specified risk and performance measures.
 }
 \examples{
-# Loading data
-data(edhec, package = "PerformanceAnalytics")
-# Changing the data colnames
-names(edhec) = c("CA", "CTA", "DIS", "EM", "EMN",
-                 "ED", "FIA", "GM", "LS", "MA",
-                 "RV", "SS", "FOF")
-# Computing the standard errors for
-# the three influence functions based approaches
-EstimatorSE(edhec[,"CA"], se.method = c("IFcor"),
-            cleanOutliers = FALSE,
-            fitting.method = c("Exponential", "Gamma")[1])
+# Examples using PerformanceAnalytics data
+if (requireNamespace("PerformanceAnalytics", quietly = TRUE)) {
+  # Loading data
+  data(edhec, package = "PerformanceAnalytics")
+  # Changing the data colnames
+  names(edhec) <- c("CA", "CTA", "DIS", "EM", "EMN",
+                    "ED", "FIA", "GM", "LS", "MA",
+                    "RV", "SS", "FOF")
+  # Computing the standard errors for
+  # the three influence functions based approaches
+  EstimatorSE(edhec[,"CA"], se.method = c("IFcor"),
+              cleanOutliers = FALSE,
+              fitting.method = c("Exponential", "Gamma")[1])
+}
 
 }
 \author{

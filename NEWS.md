@@ -48,3 +48,10 @@
 
 # RPESE 1.2.6
 * Update author field in DESCRIPTION file.
+
+# RPESE 1.2.7
+* Removed redundant Maintainer field from DESCRIPTION (already specified in Authors@R).
+* Added Encoding: UTF-8 to DESCRIPTION.
+* Updated all examples to conditionally check for PerformanceAnalytics availability 
+  using requireNamespace(), ensuring compatibility with noSuggests CRAN checks.
+* Package now compatible with RPEIF 1.2.6 and RPEGLMEN 1.1.5.

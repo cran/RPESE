@@ -56,17 +56,20 @@ A vector or a list depending on \code{se.method}.
 \code{robMean.SE} computes the standard error of the robust location (mean) M-estimator of the returns.
 }
 \examples{
-# Loading data
-data(edhec, package = "PerformanceAnalytics")
-# Changing the data colnames
-names(edhec)  =  c("CA", "CTA", "DIS", "EM", "EMN",
-                 "ED", "FIA", "GM", "LS", "MA",
-                 "RV", "SS", "FOF")
-# Computing the standard errors for
-# the two influence functions based approaches
-robMean.SE(edhec, se.method = c("IFiid","IFcorAdapt"),
-           fitting.method = c("Exponential", "Gamma")[1],
-           family = "mopt", eff = 0.95)
+# Examples using PerformanceAnalytics data
+if (requireNamespace("PerformanceAnalytics", quietly = TRUE)) {
+  # Loading data
+  data(edhec, package = "PerformanceAnalytics")
+  # Changing the data colnames
+  names(edhec) <- c("CA", "CTA", "DIS", "EM", "EMN",
+                    "ED", "FIA", "GM", "LS", "MA",
+                    "RV", "SS", "FOF")
+  # Computing the standard errors for
+  # the two influence functions based approaches
+  robMean.SE(edhec, se.method = c("IFiid","IFcorAdapt"),
+             fitting.method = c("Exponential", "Gamma")[1],
+             family = "mopt", eff = 0.95)
+}
 
 }
 \author{
